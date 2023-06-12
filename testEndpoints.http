@@ -12,3 +12,19 @@ Content-Type: application/json
 }
 ### get user
 GET http://localhost:8080/api/user/4
+
+### update user
+PUT http://localhost:8080/api/user/4
+Content-Type: application/json
+
+{
+  "username": "john",
+  "password": "qwerty",
+  "email": "sfdsf@sui.com",
+  "role": {
+    "id": 2
+  }
+}
+
+### delete user
+DELETE http://localhost:8080/api/user/4

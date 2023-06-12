@@ -18,6 +18,8 @@ func NewRouter(s *service.UserService) *mux.Router {
 	userRoutes := r.PathPrefix("/api/user").Subrouter()
 	userRoutes.HandleFunc("/create", userHandler.CreateUser).Methods(http.MethodPost)
 	userRoutes.HandleFunc("/{id}", userHandler.GetUser).Methods(http.MethodGet)
+	userRoutes.HandleFunc("/{id}", userHandler.UpdateUser).Methods(http.MethodPut)
+	userRoutes.HandleFunc("/{id}", userHandler.DeleteUser).Methods(http.MethodDelete)
 
 	return r
 }

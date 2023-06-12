@@ -81,3 +81,43 @@ func (r *UserRepository) Authenticate(username, password string) (*entity.User, 
 	log.Printf("User authenticated successfully: %s\n", username)
 	return user, nil
 }
+
+func (r *UserRepository) SaveUser(user *entity.User) error {
+	log.Printf("Saving user: %s\n", user.Username)
+
+	query := `UPDATE users SET username = $1, password = $2, email = $3, role_id = $4 
+              WHERE id = $5`
+
+	// Prepare a hashed version of the password
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		log.Printf("Error hashing password: %s\n", err)
+		return err
+	}
+
+	// Execute the SQL query
+	_, err = r.db.Exec(query, user.Username, string(hashedPassword), user.Email, user.Role.ID, user.ID)
+	if err != nil {
+		log.Printf("Error saving user: %s\n", err)
+		return err
+	}
+
+	log.Printf("User saved successfully: %s\n", user.Username)
+	return nil
+}
+
+func (r *UserRepository) DeleteUser(id int) error {
+	log.Printf("Deleting user with ID: %d\n", id)
+
+	query := `DELETE FROM users WHERE id = $1`
+
+	// Execute the SQL query
+	_, err := r.db.Exec(query, id)
+	if err != nil {
+		log.Printf("Error deleting user: %s\n", err)
+		return err
+	}
+
+	log.Printf("User deleted successfully with ID: %d\n", id)
+	return nil
+}

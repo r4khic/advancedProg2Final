@@ -74,3 +74,28 @@ func (s *UserService) GetUser(id int) (*entity.User, error) {
 
 	return user, nil
 }
+
+func (s *UserService) UpdateUser(user *entity.User) error {
+	existingUser, err := s.GetUser(int(user.ID))
+	if err != nil {
+		return err
+	}
+	existingUser.Email = user.Email
+	err = s.repo.SaveUser(existingUser)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *UserService) DeleteUser(id int) error {
+	_, err := s.GetUser(id)
+	if err != nil {
+		return err
+	}
+	err = s.repo.DeleteUser(id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
